@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>هدية ملكية - د. جهاد علاء عمر (Ultra-Ultra+)</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/7b6f9f6b1a.js" crossorigin="anonymous"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- tsparticles (interactive particles background) -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+    <!-- QRCode generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Howler for sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0b0604;
+            --gold-1: #d4af37;
+            --gold-2: #ffd24d;
+            --muted: #efe8dd;
+            --card-overlay: rgba(255, 255, 255, 0.02);
+            --glass: rgba(255, 255, 255, 0.04);
+            --text-dark: #1d1b18;
+            --accent: #d4af37;
+        }
+
+        [data-theme="light"] {
+            --bg-dark: linear-gradient(135deg, #fefaf6, #fff8e7);
+            --muted: #2a2a2a;
+            --card-overlay: rgba(11, 7, 4, 0.03);
+            --glass: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Cairo', sans-serif
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background .45s ease, color .45s ease;
+        }
+
+        /* particle canvas */
+        #tsparticles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* main card */
+        .gift-wrap {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1120px;
+            border-radius: 24px;
+            overflow: visible;
+            padding: 28px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 28px;
+            box-shadow: 0 30px 120px rgba(2, 2, 2, 0.65);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
+            backdrop-filter: blur(6px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        /* top controls (theme, qr, close) */
+        .top-controls {
+            position: absolute;
+            left: 20px;
+            top: 18px;
+            display: flex;
+            gap: 10px;
+            z-index: 6;
+        }
+
+        .control-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+            transition: transform .18s ease, background .18s ease;
+        }
+
+        .control-btn:active {
+            transform: translateY(2px)
+        }
+
+        /* layout left */
+        .left {
+            padding: 22px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        .label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.14), rgba(255, 210, 77, 0.08));
+            color: var(--gold-1);
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 800;
+            width: max-content;
+            box-shadow: 0 8px 36px rgba(212, 175, 55, 0.06);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 46px;
+            color: var(--gold-2);
+            -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.22);
+            letter-spacing: 0.4px;
+            margin: 4px 0;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #e9dfc9;
+            opacity: 0.95
+        }
+
+        .message {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0.02));
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: inset 0 -6px 18px rgba(0, 0, 0, 0.25);
+            font-size: 16px;
+            line-height: 1.85;
+            color: var(--muted);
+        }
+
+        .features {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+            min-width: fit-content;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+            color: var(--muted)
+        }
+
+        .feature i {
+            color: var(--gold-2)
+        }
+
+        .ctas {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gold-1), var(--gold-2));
+            color: #0b0604;
+            box-shadow: 0 12px 34px rgba(212, 175, 55, 0.24)
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--gold-2);
+            border: 1px solid rgba(212, 175, 55, 0.08)
+        }
+
+        .btn:active {
+            transform: translateY(2px)
+        }
+
+        .meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 10px;
+            color: var(--muted)
+        }
+
+        /* right column */
+        .right {
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .portrait-card {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 18px;
+            padding: 22px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.06));
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            overflow: visible
+        }
+
+        /* 3D golden frame */
+        .portrait {
+            width: 200px;
+            height: 200px;
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #222, #111);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 6px 18px rgba(255, 255, 255, 0.03);
+            position: relative;
+            border: 10px solid rgba(212, 175, 55, 0.22);
+        }
+
+        .portrait::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: conic-gradient(from 120deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02), transparent 60%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        .portrait .shine {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            left: 10%;
+            top: 10%;
+            transform: rotate(12deg);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.02));
+            filter: blur(18px);
+            opacity: 0.9;
+            pointer-events: none;
+            animation: shimmer 3.8s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: translateX(-10%) rotate(12deg)
+            }
+
+            to {
+                transform: translateX(20%) rotate(12deg)
+            }
+        }
+
+        .portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .portrait-name {
+            font-weight: 900;
+            color: var(--gold-2);
+            letter-spacing: 0.6px;
+            font-size: 20px
+        }
+
+        .portrait-role {
+            font-size: 13px;
+            color: #e9dfc9;
+            opacity: 0.95
+        }
+
+        /* QR container */
+        .qr-wrap {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 10px
+        }
+
+        /* small helpers */
+        .muted-small {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px
+        }
+
+        /* responsive */
+        @media (max-width:980px) {
+            .gift-wrap {
+                grid-template-columns: 1fr;
+                padding: 18px;
+                gap: 18px
+            }
+
+            .right {
+                order: -1
+            }
+
+            .portrait {
+                width: 160px;
+                height: 160px;
+                border-width: 8px
+            }
+
+            .title {
+                font-size: 34px
+            }
+        }
+
+        @media (max-width:420px) {
+            .title {
+                font-size: 26px
+            }
+
+            .portrait {
+                width: 140px;
+                height: 140px
+            }
+        }
+
+        /* subtle parallax transform classes applied by JS */
+        .parallax {
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- interactive particles (background) -->
+    <div id="tsparticles" aria-hidden="true"></div>
+
+    <!-- main card -->
+    <div class="gift-wrap" id="giftWrap" aria-label="هدية رقمية ملكية لد. جهاد علاء عمر" data-theme="dark">
+
+        <!-- top controls -->
+        <div class="top-controls" role="toolbar" aria-label="التحكم">
+            <button class="control-btn" id="themeToggle" title="تبديل الثيم (فاتح/داكن)"><i class="fa-solid fa-sun"></i>
+                ثيم</button>
+            <button class="control-btn" id="playChime" title="تشغيل صوت تهنئة"><i class="fa-solid fa-bell"></i>
+                نغمة</button>
+            <div class="control-btn" id="qrBtn" title="أظهر QR"><i class="fa-solid fa-qrcode"></i> QR</div>
+        </div>
+
+        <!-- left content -->
+        <div class="left parallax" id="leftLayer">
+            <div class="label" id="label">هدية فاخرة</div>
+
+            <h1 class="title parallax" id="title">د. جهاد علاء عمر</h1>
+            <div class="subtitle parallax" id="subtitle">طالبة طب أسنان — مستقبل باهر</div>
+
+            <div class="message parallax" id="message">
+                بأجمل الكلمات وأصدق الأمنيات، نحتفل اليوم بكِ وبخطوتك الأولى نحو حلم كبير —
+                طبيبة أسنان متألقة بإذن الله.
+                هذه الهدية الرقمية مخصصة لتذكيرك بأننا فخورون بكِ وسندعمك لكل النجاحات القادمة. ✨
+            </div>
+
+            <div class="features parallax" aria-hidden="true">
+                <div class="feature"><i class="fa-solid fa-star"></i> فخر العيلة</div>
+                <div class="feature"><i class="fa-solid fa-graduation-cap"></i> بداية مشرقة</div>
+                <div class="feature"><i class="fa-solid fa-hand-holding-heart"></i> حب ودعم</div>
+            </div>
+
+            <div class="ctas parallax">
+                <button class="btn btn-primary" id="playVoice"><i class="fa-solid fa-play"></i> رسالة صوتية</button>
+                <button class="btn btn-ghost" id="downloadBtn"><i class="fa-solid fa-download"></i> تحميل كصورة</button>
+                <a class="btn btn-ghost" id="shareWA" href="#" target="_blank" rel="noopener"><i
+                        class="fa-brands fa-whatsapp"></i> شارك على واتساب</a>
+                <a class="btn btn-ghost" id="sendEmail" href="#"><i class="fa-solid fa-envelope"></i> أرسل عبر
+                    البريد</a>
+            </div>
+
+            <div class="meta parallax">
+                <div class="qr-wrap" id="qrWrap" style="display:none">
+                    <div id="qrcode"></div>
+                    <div class="muted-small">امسح QR لفتح الصفحة</div>
+                </div>
+                <div class="share muted-small" style="margin-left:auto">
+                    مشاركة سريعة:
+                    <a id="fbShare" href="#" target="_blank" rel="noopener" style="margin-inline-start:10px"><i
+                            class="fa-brands fa-facebook"></i> فيسبوك</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- right portrait -->
+        <div class="right parallax" id="rightLayer">
+            <div class="portrait-card" role="img" aria-label="صورة جهاد">
+                <div class="portrait" id="portrait">
+                    <!-- استبدل الرابط بالصورة النهائية إن رغبت -->
+                    <img id="portraitImg" src="https://i.ibb.co/nqK8ztyF/image.png" alt="صورة جهاد">
+                    <div class="shine" aria-hidden="true"></div>
+                </div>
+                <div class="portrait-name">جهاد علاء عمر</div>
+                <div class="portrait-role">طالبة طب أسنان — فخورة</div>
+
+                <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+                    <div id="miniQR"
+                        style="width:72px;height:72px;border-radius:12px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center">
+                    </div>
+                    <div style="text-align:right">
+                        <div class="muted-small">حفظ الهدية كصورة أو شاركها فورًا</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- hidden audio -->
+    <audio id="chimeSound" preload="auto">
+        <!-- small chime, use external source or upload to static if hosting -->
+        <source src="https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg" type="audio/ogg">
+    </audio>
+
+    <audio id="voiceMsg" preload="auto">
+        <!-- يمكنك وضع ملف صوتي هنا -->
+        <source src="" type="audio/mpeg">
+    </audio>
+
+    <script>
+        /* ================================
+           tsparticles background (gold particles)
+           ================================ */
+        tsParticles.load("tsparticles", {
+            fpsLimit: 60,
+            background: { color: { value: "transparent" } },
+            particles: {
+                number: { value: 60, density: { enable: true, area: 800 } },
+                color: { value: ["#ffd24d", "#fbe8b1", "#fff7dc"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.9, random: { enable: true, minimumValue: 0.4 }, anim: { enable: false } },
+                size: { value: { min: 2, max: 9 }, random: true, anim: { enable: false } },
+                move: { enable: true, speed: 0.8, direction: "top", random: true, straight: false, outModes: "out" },
+                links: { enable: false }
+            },
+            interactivity: {
+                detectsOn: "window",
+                events: { onHover: { enable: true, mode: "repulse" }, onClick: { enable: true, mode: "push" } },
+                modes: {
+                    repulse: { distance: 120, duration: 0.6 },
+                    push: { quantity: 4 }
+                }
+            },
+            detectRetina: true
+        });
+
+        /* ================================
+           GSAP intro + parallax mouse
+           ================================ */
+        const tl = gsap.timeline({ defaults: { duration: 0.9, ease: "power3.out" } });
+        tl.from("#label", { y: 20, opacity: 0, scale: 0.92 })
+            .from("#title", { y: 30, opacity: 0, scale: 0.96 }, "-=0.6")
+            .from("#subtitle", { y: 18, opacity: 0 }, "-=0.55")
+            .from("#message", { y: 22, opacity: 0, duration: 1.2 }, "-=0.45")
+            .from(".feature", { y: 12, opacity: 0, stagger: 0.08 }, "-=0.9")
+            .from("#portrait", { y: 30, opacity: 0, scale: 0.95 }, "-=1.1")
+            .from(".ctas .btn", { y: 20, opacity: 0, stagger: 0.08 }, "-=0.9");
+
+        /* floating portrait */
+        gsap.to("#portrait", { y: 8, duration: 3.6, yoyo: true, repeat: -1, ease: "sine.inOut" });
+
+        /* subtle parallax with mouse */
+        const leftLayer = document.getElementById('leftLayer');
+        const rightLayer = document.getElementById('rightLayer');
+        document.addEventListener('mousemove', (e) => {
+            const w = window.innerWidth, h = window.innerHeight;
+            const x = (e.clientX - w / 2) / (w / 2); // -1 .. 1
+            const y = (e.clientY - h / 2) / (h / 2);
+            gsap.to(leftLayer, { x: x * 12, y: y * 6, duration: 0.8, ease: "power2.out" });
+            gsap.to(rightLayer, { x: x * -10, y: y * 8, duration: 0.9, ease: "power2.out" });
+        });
+
+        /* ================================
+           Decorative miniQR (for portrait)
+           ================================ */
+        const miniQRContainer = document.getElementById('miniQR');
+        const pageUrl = window.location.href; // If hosting, will be actual link
+        new QRCode(miniQRContainer, { text: pageUrl, width: 64, height: 64, colorDark: "#111", colorLight: "#fff7", correctLevel: QRCode.CorrectLevel.H });
+
+        /* ================================
+           QR full panel toggle
+           ================================ */
+        const qrBtn = document.getElementById('qrBtn');
+        const qrWrap = document.getElementById('qrWrap');
+        const qrcodeEl = document.getElementById('qrcode');
+        let qShown = false;
+        qrBtn.addEventListener('click', () => {
+            qShown = !qShown;
+            qrWrap.style.display = qShown ? 'flex' : 'none';
+            if (qShown) {
+                qrcodeEl.innerHTML = "";
+                new QRCode(qrcodeEl, { text: pageUrl, width: 128, height: 128, colorDark: "#111", colorLight: "#fff7", correctLevel: QRCode.CorrectLevel.H });
+            }
+        });
+
+        /* ================================
+           Theme toggle (dark/light)
+           ================================ */
+        const themeToggle = document.getElementById('themeToggle');
+        const giftWrap = document.getElementById('giftWrap');
+        let currentTheme = 'dark';
+        themeToggle.addEventListener('click', () => {
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                giftWrap.setAttribute('data-theme', 'light');
+                currentTheme = 'light';
+                themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i> ثيم';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                giftWrap.setAttribute('data-theme', 'dark');
+                currentTheme = 'dark';
+                themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i> ثيم';
+            }
+        });
+
+        /* ================================
+           Sound effects (Howler)
+           ================================ */
+        const chime = new Howl({ src: ['https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg'], volume: 0.7 });
+        document.getElementById('playChime').addEventListener('click', () => chime.play());
+
+        /* voice message playback (TTS fallback) */
+        const playVoice = document.getElementById('playVoice');
+        const voice = document.getElementById('voiceMsg');
+        playVoice.addEventListener('click', () => {
+            if (voice.src) {
+                voice.play();
+                return;
+            }
+            // use SpeechSynthesis as instant fallback
+            const text = `ألف مبروك يا جهاد. كلنا فخورين بيكي وبداية مشوارك في طب الأسنان. بالتوفيق دائماً.`;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'ar-SA';
+            utter.rate = 0.95;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utter);
+        });
+
+        /* ================================
+           Download as image (html2canvas)
+           ================================ */
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.addEventListener('click', async () => {
+            // play chime for delight
+            chime.play();
+            // scale temporarily for hi-res
+            const el = document.getElementById('giftWrap');
+            el.style.transform = 'scale(1.02)';
+            await new Promise(r => setTimeout(r, 120));
+            const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: null });
+            el.style.transform = '';
+            // create link
+            const link = document.createElement('a');
+            link.download = 'هدية-جهاد-ultra-plus.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        /* ================================
+           Share links
+           ================================ */
+        function getMessageText() {
+            const title = document.getElementById('title').innerText;
+            const subtitle = document.getElementById('subtitle').innerText;
+            return encodeURIComponent(`ألف مبروك ${title} — ${subtitle} 🎉\nتفقد/ي الهدية:`);
+        }
+        const shareWA = document.getElementById('shareWA');
+        const fbShare = document.getElementById('fbShare');
+        shareWA.href = `https://wa.me/?text=${getMessageText()}%20${encodeURIComponent(pageUrl)}`;
+        fbShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+
+        /* ================================
+           Send by email (mailto)
+           ================================ */
+        const sendEmail = document.getElementById('sendEmail');
+        sendEmail.addEventListener('click', (e) => {
+            const subject = encodeURIComponent('هدية تهنئة خاصة — جهاد');
+            const body = encodeURIComponent(`ألف مبروك! اطلع/ي الهدية على الرابط: ${pageUrl}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        });
+
+        /* ================================
+           Accessibility & keyboard shortcuts
+           ================================ */
+        // press "m" to play message, "c" to capture, "t" to toggle theme
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'm') playVoice.click();
+            if (e.key === 'c') downloadBtn.click();
+            if (e.key === 't') themeToggle.click();
+        });
+
+        /* ================================
+           initialize small sparkle animation using GSAP timeline (light touches)
+           ================================ */
+        const colors = ['#ffd24d', '#fbe8b1', '#fffae0'];
+        for (let i = 0; i < 12; i++) {
+            const s = document.createElement('div');
+            s.style.position = 'absolute';
+            s.style.width = (6 + Math.random() * 12) + 'px';
+            s.style.height = s.style.width;
+            s.style.borderRadius = '50%';
+            s.style.left = (10 + Math.random() * 80) + '%';
+            s.style.top = (10 + Math.random() * 80) + '%';
+            s.style.background = `radial-gradient(circle at 30% 30%, #fff, ${colors[Math.floor(Math.random() * colors.length)]} 40%)`;
+            s.style.opacity = '0';
+            s.style.pointerEvents = 'none';
+            document.getElementById('giftWrap').appendChild(s);
+            gsap.to(s, { opacity: 0.95, y: -40 - Math.random() * 120, x: (-30 + Math.random() * 60), duration: (4 + Math.random() * 6), delay: (Math.random() * 2), repeat: -1, yoyo: true, ease: "sine.inOut" });
+        }
+
+        /* ================================
+           If you want server-side portrait: replace src via backend rendering.
+           Example (Flask): <img id="portraitImg" src="{{ url_for('static','images/jihad.jpg') }}">
+           ================================ */
+
+    </script>
+</body>
+
+</html>
